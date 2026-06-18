@@ -7,10 +7,14 @@ Check-In System is a web application built with a separation between its interfa
 ## Technology Stack
 - Frontend: HTML, CSS, JavaScript, TypeScript
 - Mobile Application Plugin: Cordova
-- Web Application Library: Bootstrap
+- Web Application: Angular, Bootstrap
 - Backend: PHP
 - Database: MariaDB, phpMyAdmin
 - Network: zrok
+
+## Web Application
+
+[Web application] (https://zegell.github.io/OS-Project-Web/) is built using Angular. 
 
 ## Project Structure
 
