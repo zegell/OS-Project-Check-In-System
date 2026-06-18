@@ -14,7 +14,7 @@ Check-In System is a web application built with a separation between its interfa
 
 ## Web Application
 
-[Web application] (https://zegell.github.io/OS-Project-Web/) is built using Angular. 
+[Web application](https://zegell.github.io/OS-Project-Web/) is built using Angular. 
 
 ## Project Structure
 
