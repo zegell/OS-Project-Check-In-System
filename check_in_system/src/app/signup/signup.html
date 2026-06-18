@@ -1,0 +1,42 @@
+<div class = "d-flex align-items-center justify-content-center themeBlue"  style = "min-height: 100vh;">
+    <div class = "d-flex justify-content-center align-items-center">
+		<div class = "shadow-lg rounded bg-secondary-subtle p-5" style = "width: 600px;">
+			<div class = "text-center my-3">
+				<h2 style = "font-size: 50px;">Sign Up</h2>
+			</div>
+            <div class = "container">
+                <form #regForm = "ngForm" (ngSubmit) = "submitRegister(regForm)">
+                    <div class = "my-4 pt-5">
+                        <label for = "signUpUsername" class  = "form-label text-black">Username</label>
+                        <input type = "text" name = "username" ngModel class = "form-control rounded p-2" required id ="signUpUsername" autocomplete = "off">
+                    </div>
+                    <div class = "my-4">
+                        <label for = "signUpPassword" class  = "form-label text-black">Password</label>
+                        <input type = "password" name = "password" ngModel class = "form-control rounded p-2" required id ="signUpPassword">
+                    </div>
+                    <div class = "my-4">
+                        <label for = "signUpPasswordConfirm" class  = "form-label text-black">Confirm Password</label>
+                        <input type = "password" name = "confirmPassword" ngModel class = "form-control rounded p-2" required id ="signUpPasswordConfirm">
+                        @if (regForm.value.confirmPassword && regForm.value.password !== regForm.value.confirmPassword) {
+                            <div class = "text-danger small mt-1">
+                                * Password do not match
+                            </div>
+                        }
+                    </div>
+                    <div class = "mt-5">
+                        <button class = "btn btn-solid-blue w-100 p-3" [disabled] = "!regForm.valid || regForm.value.password !== regForm.value.confirmPassword">Sign Up</button>
+                    </div>
+                    <div class = "mt-3">
+                        <a href = "/login"  class = "text-decoration-none">Log In</a>
+                    </div>
+
+                    @if (errorMessage) {
+                        <div class = "alert alert-danger mt-3 text-center rounded" role = "alert">
+                            {{errorMessage}}
+                        </div>
+                    }
+                </form>
+            </div>
+		</div>
+	</div>
+</div>

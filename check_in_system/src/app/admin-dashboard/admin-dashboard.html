@@ -1,0 +1,206 @@
+<div class = "py-5 themeBlue" style = "min-height: 100vh;">
+    @if (errorMessage()) {
+        <div class = "alert alert-danger shadow border-2" role = "alert">
+            <h4 class = "alert-heading fw-bold">Account Session Issue</h4>
+            <p class = "mb-0">{{errorMessage()}}</p>
+        </div>
+    }
+    <div class = "container d-flex align-items-center justify-content-between">
+        <h1 class = "text-white" style = "font-size: 50px;">Hello {{username()}}!</h1>
+        <div>
+            <button class = "btn btn-theme-yellow" (click) = "logOut()">Log Out</button>
+        </div>
+    </div>
+    <div class = "container bg-secondary-subtle mt-5 p-3 rounded shadow-lg">
+        <div>
+            <h4 class = "mb-4 mt-3">Check In History</h4>
+            <div class = "themeYellow p-3 mb-4 rounded">
+                <h5>Personal Total Check In: {{personalTotalCheckIn()}}</h5>
+            </div>
+            <div class="d-flex align-items-center justify-content-center rounded overflow-hidden shadow themeBlue">
+                <table class="table table-hover">
+                    <thead>
+                        <tr class = "table-theme">
+                            <th scope="col">Check-In ID</th>
+                            <th scope="col">Longitude</th>
+                            <th scope="col">Latitude</th>
+                            <th scope="col">Check-In Time</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for (row of checkInLogs(); track row.checkin_id) {
+                            <tr>
+                                <th scope = "row" class = "table-group-divider">{{row.checkin_id}}</th>
+                                <td class = "table-group-divider">{{row.longitude | gpsDirection:'lng'}}°</td>
+                                <td class = "table-group-divider">{{row.latitude | gpsDirection:'lat'}}°</td>
+                                <td class = "table-group-divider">{{row.check_in_time}}°</td>
+                            </tr>
+                        }
+                        @empty {
+                            <tr>
+                                <td colspan ="4" class = "text-center text-muted">No data</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class = "my-5">
+            <h4>All Users</h4>
+            <div class = "themeYellow p-3 mb-4 rounded mt-3">
+                <h5>Total Users: {{totalUser()}}</h5>
+            </div>
+            <div class="d-flex align-items-center justify-content-center pb-3">
+                <form class = "d-flex w-100" (submit) = "onUserSearch($event, userInput)">
+                    <input #userInput class="form-control me-2 border border-dark" type="search" name = "searchTitle" placeholder="Enter Username" aria-label="Enter Username">
+                    <button class="btn btn-theme-blue" type="submit">Search</button>
+                </form>
+            </div>
+            <div class="d-flex align-items-center justify-content-center rounded overflow-hidden shadow themeBlue">
+                <table class="table table-hover">
+                    <thead>
+                        <tr class = "table-theme">
+                            <th scope="col">User ID</th>
+                            <th scope="col">Username</th>
+                            <th scope="col">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for (user of filteredUsers(); track user.user_id) {
+                            <tr>
+                                <th scope = "row" class = "table-group-divider">{{user.user_id}}</th>
+                                <td class = "table-group-divider">
+                                    {{user.username}}
+                                    <span class = "badge ms-2" [ngClass] = "user.user_type === 'ADMIN' ? 'bg-dark' : 'bg-secondary'">
+                                        {{user.user_type}}
+                                    </span>                                
+                                </td>
+                                <td class = "table-group-divider">
+                                    <button class = "btn btn-primary me-2" (click) = "openEditModal(user)">Edit</button>
+                                    <button class = "btn btn-primary btn-danger" (click) = "openDeleteModal(user)">Delete</button>
+                                </td>
+                            </tr>
+                        }
+                        @empty {
+                            <tr>
+                                <td colspan ="3" class = "text-center text-muted">No data</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class = "my-5">
+            <h4>All Check In</h4>
+            <div class = "themeYellow p-3 mb-4 rounded mt-3">
+                <h5>Total Check In: {{totalCheckIn()}}</h5>
+            </div>
+            <div class="d-flex align-items-center justify-content-center pb-3">
+                <form class = "d-flex w-100" (submit) = "onCheckInSearch($event, checkInInput)">
+                    <input #checkInInput class="form-control me-2 border border-dark" type="search" name = "searchTitle" placeholder="Enter Username" aria-label="Enter Username">
+                    <button class="btn btn-theme-blue" type="submit">Search</button>
+                </form>
+            </div>
+            <div class="d-flex align-items-center justify-content-center rounded overflow-hidden shadow themeBlue">
+                <table class="table table-hover">
+                    <thead>
+                        <tr class = "table-theme">
+                            <th scope="col">Username</th>
+                            <th scope="col">Check-In ID</th>
+                            <th scope="col">Longitude</th>
+                            <th scope="col">Latitude</th>
+                            <th scope="col">Check-In Time</th>
+                            <th scope="col">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for (checkin of filteredCheckIn(); track checkin.checkin_id) {
+                            <tr>
+                                <td class = "table-group-divider"><strong>{{checkin.username}}</strong></td>
+                                <th scope = "row" class = "table-group-divider">{{checkin.checkin_id}}</th>
+                                <td class = "table-group-divider">{{checkin.longitude | gpsDirection:'lng'}}°</td>
+                                <td class = "table-group-divider">{{checkin.latitude | gpsDirection:'lng'}}°</td>
+                                <td class = "table-group-divider">{{checkin.check_in_time}}</td>
+                                <td class = "table-group-divider">
+                                    <button class = "btn btn-danger" (click) = "openCheckInDeleteModal(checkin)">Delete</button>
+                                </td>
+                            </tr>
+                        }
+                        @empty {
+                            <tr>
+                                <td colspan ="6" class = "text-center text-muted">No data</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    @if (deleteModal() && userDelete()) {
+        <div class="modal d-block modal-fade" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content border border-danger border-2 shadow-lg">
+                    <div class="modal-header bg-danger text-white">
+                        <h5 class="modal-title fw-bold">User Deletion</h5>
+                        <button type="button" class="btn-close btn-close-white" (click)="closeDeleteModal()"></button>
+                    </div>
+                    <div class="modal-body py-4">
+                        <p class="fs-5 mb-1">Are you sure you want to delete user account: <strong class="text-danger">{{ userDelete()?.username }}</strong>?</p>
+                    </div>
+                    <div class="modal-footer bg-light">
+                        <button type="button" class="btn btn-secondary" (click)="closeDeleteModal()">Cancel</button>
+                        <button type="button" class="btn btn-danger px-4" (click)="confirmDelete()">Delete Permanently</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    @if (editFormRole() && userEdit()) {
+        <div class="modal d-block modal-fade" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content border border-primary border-2 shadow-lg">
+                    <div class="modal-header bg-primary text-white">
+                        <h5 class="modal-title fw-bold">User Role</h5>
+                        <button type="button" class="btn-close btn-close-white" (click)="closeEditModal()"></button>
+                    </div>
+                    <div class="modal-body py-4">
+                        <p class="mb-3">Changing User Type for: <strong>{{ userEdit()?.username }}</strong> (ID: {{ userEdit()?.user_id }})</p>
+                    
+                        <div class="form-group">
+                            <label for="roleSelect" class="form-label fw-bold text-muted">User Type Selection:</label>
+                            <select id="roleSelect" class="form-select border border-dark border-2" [value]="editFormRole()" (change)="onRoleChange($event)">
+                                <option value="USER">USER</option>
+                                <option value="ADMIN">ADMIN</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer bg-light">
+                        <button type="button" class="btn btn-secondary" (click)="closeEditModal()">Cancel</button>
+                        <button type="button" class="btn btn-primary px-4" (click)="confirmRoleUpdate()">Update User Type</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    @if (checkInDeleteModal() && checkInDelete()) {
+    <div class="modal d-block modal-fade" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border border-danger border-2 shadow-lg">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title fw-bold">Clear Coordinate Record</h5>
+                    <button type="button" class="btn-close btn-close-white" (click)="closeCheckInDeleteModal()"></button>
+                </div>
+                <div class="modal-body py-4">
+                    <p class="fs-5 mb-1">Are you sure you want to remove check-in id <strong class="text-danger">#{{ checkInDelete()?.checkin_id }}</strong>?</p>
+                    <p class="text-muted mb-0">Logged by: <strong>{{ checkInDelete()?.username }}</strong></p>
+                </div>
+                <div class="modal-footer bg-light">
+                    <button type="button" class="btn btn-secondary" (click)="closeCheckInDeleteModal()">Cancel</button>
+                    <button type="button" class="btn btn-danger px-4" (click)="confirmCheckInDelete()">Remove Log Entry</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+</div>

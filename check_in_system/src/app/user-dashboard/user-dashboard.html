@@ -1,0 +1,51 @@
+<div class = "pt-5 themeBlue" style = "min-height: 100vh;">
+    @if (errorMessage()) {
+        <div class = "alert alert-danger shadow border-2" role = "alert">
+            <h4 class = "alert-heading fw-bold">Account Session Issue</h4>
+            <p class = "mb-0">{{errorMessage()}}</p>
+        </div>
+    }
+    <div class = "container d-flex align-items-center justify-content-between">
+        <h1 class = "text-white" style = "font-size: 50px;">Hello {{username()}}!</h1>
+        <div>
+            <button class = "btn btn-theme-yellow" (click) = "logOut()">Log Out</button>
+        </div>
+    </div>
+    <div class = "container bg-secondary-subtle mt-4 p-3 rounded shadow-lg">
+        <div>
+            <h4 class = "mb-4 mt-3">Check In History</h4>
+            <div class = "themeYellow p-3 mb-4 rounded shadow">
+                <h5>Total Check In: {{personalTotalCheckIn()}}</h5>
+            </div>
+            <div class="d-flex align-items-center justify-content-center rounded overflow-hidden shadow themeBlue">
+                <table class="table table-hover">
+                    <thead class = "table-theme">
+                        <tr>
+                            <th scope="col">Check-In ID</th>
+                            <th scope="col">Longitude</th>
+                            <th scope="col">Latitude</th>
+                            <th scope="col">Check-In Time</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for (row of checkInLogs(); track row.checkin_id) {
+                            <tr>
+                                <th scope = "row" class = "table-group-divider">{{row.checkin_id}}</th>
+                                <td class = "table-group-divider">{{row.longitude | gpsDirection:'lng'}}°</td>
+                                <td class = "table-group-divider">{{row.latitude | gpsDirection:'lat'}}°</td>
+                                <td class = "table-group-divider">{{row.check_in_time}}</td>
+                            </tr>
+                        }
+                        @empty {
+                            <tr>
+                                <td colspan = "4" class = "text-center text-muted py-3">
+                                    No Data
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
