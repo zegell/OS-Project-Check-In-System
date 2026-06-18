@@ -12,7 +12,7 @@ Check-In System is a web application built with a separation between its interfa
 - Database: MariaDB, phpMyAdmin
 - Network: zrok
 
-## Web Application
+## [Web Application](https://zegell.github.io/OS-Project-Web/)
 
 [Web application](https://zegell.github.io/OS-Project-Web/) is built using Angular. 
 
