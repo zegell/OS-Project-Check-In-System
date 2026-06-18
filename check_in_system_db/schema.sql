@@ -1,0 +1,20 @@
+CREATE DATABASE checkin_db;
+
+USE checkin_db;
+
+
+CREATE TABLE IF NOT EXISTS users (
+    user_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(255) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    user_type VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS check_ins (
+    checkin_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    user_id BIGINT NOT NULL,
+    longitude DOUBLE NOT NULL, 
+    latitude DOUBLE NOT NULL,
+    check_in_time DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
+);

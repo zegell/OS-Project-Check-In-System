@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Check-In System</title>
+    <meta name = "viewport" content="width= device-width, initial-scale = 1.0">
+    <link href = "css/bootstrap.min.css" rel="stylesheet">
+    <link href = "css/theme.css" rel="stylesheet">
+    <link href = "icons/bootstrap-icons.min.css" rel = "stylesheet">
+    <script src = "js/bootstrap.bundle.min.js"></script>
+</head>
+<body class = "mt-5 pt-5 themeBlue">   
+    <div class="bg-secondary-subtle rounded p-3 mx-3 border shadow mt-5 pt-5">
+        <div class = "text-center">
+			<h1>Log In</h1>
+		</div>
+        <form id = "loginForm" onsubmit = "login(event)">
+            <div class="m-3 mb-4">
+                <div class = "my-2 pt-3">
+                    <label for = "logInUsername" class  = "form-label text-black">Username</label>
+                    <input type = "text" class = "form-control rounded p-2" id = "logInUsername" name = "logInUsername" required>
+                </div>
+                <div class = "my-2 pt-3">
+                    <label for = "logInPassword" class  = "form-label text-black">Password</label>
+                    <input type = "password" class = "form-control rounded p-2" id = "logInPassword" name = "logInPassword" required>
+                </div>
+                <div class = "mt-4">
+                    <button type = "submit" class = "btn btn-solid-blue w-100 p-3">Log In</button>
+                </div>
+                <div class = "mt-3">
+                    <a href = "signup.html" class = "text-decoration-none">Sign Up</a>
+                </div>
+            </div>
+        </form>
+    </div>
+    <script src = "script/login.js"></script>
+</body>
+</html>
