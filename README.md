@@ -64,20 +64,20 @@ These are the commands needed to setup the web server
     - `extension=pdo_mysql`
 - `sudo nvim /etc/httpd/conf/extra/phpmyadmin.conf` and insert the following:
 
-Alias /phpmyadmin "/usr/share/webapps/phpMyAdmin"
-<Directory "/usr/share/webapps/phpMyAdmin">
-   DirectoryIndex index.php
-   AllowOverride All
-   Options FollowSymlinks
-   Require all granted
-</Directory>
+>Alias /phpmyadmin "/usr/share/webapps/phpMyAdmin"
+><Directory "/usr/share/webapps/phpMyAdmin">
+>   DirectoryIndex index.php
+>   AllowOverride All
+>   Options FollowSymlinks
+>   Require all granted
+></Directory>
 
 - `sudo nvim /etc/httpd/conf/extra/php-fpm.conf` and insert the following:
 
-DirectoryIndex index.php index.html
-<FilesMatch \.php$>
-    SetHandler "proxy:unix:/run/php-fpm/php-fpm.sock|fcgi://localhost/"
-</FilesMatch>
+>DirectoryIndex index.php index.html
+><FilesMatch \.php$>
+>   SetHandler "proxy:unix:/run/php-fpm/php-fpm.sock|fcgi://localhost/"
+></FilesMatch>
 
 - `sudo nvim /etc/httpd/conf/httpd.conf` and enable the following:
     - `LoadModule proxy_module modules/mod_proxy.so`
