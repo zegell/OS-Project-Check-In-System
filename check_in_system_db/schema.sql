@@ -16,5 +16,5 @@ CREATE TABLE IF NOT EXISTS check_ins (
     longitude DOUBLE NOT NULL, 
     latitude DOUBLE NOT NULL,
     check_in_time DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(user_id)
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );

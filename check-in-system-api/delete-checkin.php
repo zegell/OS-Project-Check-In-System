@@ -21,7 +21,7 @@ if (empty($data['checkin_id'])) {
 	exit();
 }
 
-$checkin_id = filter_val($data['checkin_id'], FILTER_VALIDATE_INT);
+$checkin_id = filter_var($data['checkin_id'], FILTER_VALIDATE_INT);
 
 if ($checkin_id === false) {
 	http_response_code(400);
