@@ -14,7 +14,7 @@ Check-In System is a web application built with a separation between its interfa
 
 ## [Web Application](https://zegell.github.io/OS-Project-Web/)
 
-[Web application](https://zegell.github.io/OS-Project-Web/) is built using Angular. 
+[Web application](https://zegell.github.io/OS-Project-Web/) is built using Angular 
 
 ## Project Structure
 
@@ -50,7 +50,7 @@ Install the following packages using the following command
 
 ### Setting Up MariaDB
 
-These are the commands required to give yourself the privileges needed
+These are the commands required to give yourself the privileges needed:
 
 - `sudo mariadb -u root -p`
 - `GRANT ALL PRIVILEGES ON *.* TO '#YOURNAME'@'localhost' WITH GRANT OPTION;`
@@ -90,7 +90,7 @@ These are the commands needed to setup the web server
     - `Include conf/extra/php-fpm.conf`
     - `Include conf/extra/phpmyadmin.conf`
 
-## Setting Up zrok
+### Setting Up zrok
 
 zrok is a tunneling tool to bridge between the server and the internet
 
@@ -100,7 +100,7 @@ zrok is a tunneling tool to bridge between the server and the internet
 - `zrok2 create name -n public [DOMAIN]` to reserve a name 
 - `zrok2 share public localhost:80 -n public:[DOMAIN]` to expose the local port using the domain
 
-## Starting the server
+### Starting the server
 
 - `sudo systemctl start mariadb httpd php-fpm`
 
