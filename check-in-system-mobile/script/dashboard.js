@@ -50,9 +50,9 @@ function renderHistory() {
             tr.setAttribute('onclick', `renderMap(${row.latitude}, ${row.longitude})`);
             tr.innerHTML = `
                 <th scope = "row">${row.checkin_id}</th>
-                <td>${formatGPS(row.longitude, 'lng')}</td>
                 <td>${formatGPS(row.latitude, 'lat')}</td>
-                <td>${row.checkin_time}</td>
+                <td>${formatGPS(row.longitude, 'lng')}</td>
+                <td>${row.check_in_time}</td>
             `;
             tableBody.appendChild(tr);
         });
@@ -67,7 +67,7 @@ function renderHistory() {
 function renderMap(lat, lng) {
     const renderMap = document.getElementById('mapWrapper');
     renderMap.innerHTML = `
-        <iframe id = "mapFrame" src = "" allowfullscreen = "" loading = "lazy" style = "width: 450px; height: 450px;">
+        <iframe id = "mapFrame" src = "" allowfullscreen = "" loading = "lazy" style = "width: 350px; height: 350px;">
         </iframe>
     `;
 
