@@ -8,6 +8,25 @@ document.addEventListener("DOMContentLoaded", function() {
     renderHistory();
 });
 
+const gpsLoadingModal = new bootstrap.Modal(document.getElementById('loadingModal'));
+const gpsLoadingModalHeader = document.getElementById('loadingModalHeader');
+const gpsLoadingModalTitle = document.getElementById('loadingModalTitle');
+const gpsLoadingModalBody = document.getElementById('loadingModalBody');
+
+function gpsModalState(status, message) {
+    if (status === 'error') {
+        gpsLoadingModalHeader.className = "modal-header bg-danger text-white";
+        gpsLoadingModalTitle.innerHTML = "Check-In Error";
+    } else if (status === 'loading') {
+        gpsLoadingModalHeader.className = "modal-header themeBlue text-white";
+        gpsLoadingModalTitle.innerHTML = "Locating...";
+    } else if (status === 'success') {
+        gpsLoadingModalHeader.className = "modal-header bg-success text-white";
+        gpsLoadingModalTitle.innerHTML = "Success";
+    }
+    gpsLoadingModalBody.innerHTML = `<p>${message}</p>`;
+}
+
 function renderHistory() {
     const user_id = localStorage.getItem('user_id');
     if (!user_id) return;
@@ -79,17 +98,20 @@ function renderMap(lat, lng) {
 }
 
 function checkin() {
+
+    gpsModalState('loading', 'Acquiring GPS coordinates...');
+    gpsLoadingModal.show();
+
     if (!navigator.geolocation) {
-        alert("Hardware not supported");
+        showErrorGPSModal("Unsupported Hardware");
         return;
     }
+
     const gpsOptions = {
         enableHighAccuracy: true,
         timeout: 15000,
         maximumAge: 0
     };
-
-    alert("Locating device coordinates...");
 
     navigator.geolocation.getCurrentPosition(
         function(position) {
@@ -101,17 +123,20 @@ function checkin() {
         function(error) {
             switch(error.code) {
                 case error.PERMISSION_DENIED:
-                    alert("Please enable app GPS permission");
+                    gpsModalState('error', 'Please allow location permission');
+                    setTimeout(()=> gpsLoadingModal.hide(), 2500);
                     break;
                 case error.POSITION_UNAVAILABLE:
-                    alert("Check Device Signal Visibility");
+                    gpsModalState('error', 'Location signal unavailable');
+                    setTimeout(()=> gpsLoadingModal.hide(), 2500);
                     break;
                 case error.TIMEOUT:
-                    alert("Location timed out. Try Again");
+                    gpsModalState('error', 'Location request timed out');
+                    setTimeout(()=> gpsLoadingModal.hide(), 2500);
                     break;
             }
         },
-        gpsOptions
+        gpsOptions,
     );
 }
 
@@ -133,11 +158,13 @@ function sendToDB(latitude, longitude) {
         }
     })
     .then(data => {
-        alert("Check-In Success");
+        gpsModalState('success', 'Check-In Success');
+        setTimeout(()=> gpsLoadingModal.hide(), 2500);
         renderHistory();
     })
     .catch(err => {
-        alert("Logging Failure: " + err.message);
+        gpsModalState('error', err.message);
+        setTimeout(()=> gpsLoadingModal.hide(), 2500);
         console.error("Network error logs:", err);
     });
 }

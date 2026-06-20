@@ -28,7 +28,7 @@ try {
 	$checkStmt->execute([$username]);
 
 	if ($checkStmt->fetch()) {
-		http_response_code(400);
+		http_response_code(409);
 		echo json_encode(["message" => "Username is already taken"]);
 		exit;
 	}
