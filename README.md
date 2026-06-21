@@ -12,6 +12,10 @@ Check-In System is a web application built with a separation between its interfa
 - Database: MariaDB, phpMyAdmin
 - Network: zrok
 
+## Components Diagram
+
+![Components Diagram of the Project](https://github.com/zegell/OS-Project-Check-In-System/componentsDiagram)
+
 ## [Web Application](https://zegell.github.io/OS-Project-Web/)
 
 [Web application](https://zegell.github.io/OS-Project-Web/) is built using Angular 
@@ -32,21 +36,21 @@ The server runs in the Arch Linux environment, the chosen distro for the project
 Install the following packages using the following command
 
 1. **MariaDB** for database
-    - `sudo pacman -s mariadb`
+    - `sudo pacman -S mariadb`
 
 2. **Apache** for the web server,
-    - `sudo pacman -s apache`
+    - `sudo pacman -S apache`
 
 3. **PHP** with either **php-apache**, **mod_fcgid + php-cgi**, or **php-fpm**, the server will be using php-fpm
-    - `sudo pacman -s php php-apache`
-    - `sudo pacman -s php php-cgi` and `yay -s mod_fcgid`
-    - `sudo pacman -s php php-fpm`
+    - `sudo pacman -S php php-apache`
+    - `sudo pacman -S php php-cgi` and `yay -S mod_fcgid`
+    - `sudo pacman -S php php-fpm`
 
 4. **zrok2**
-    - `yay -s zrok2`
+    - `yay -S zrok2`
 
 5. **phpMyAdmin**
-    - `sudo pacman -s phpmyadmin`
+    - `sudo pacman -S phpmyadmin`
 
 ### Setting Up MariaDB
 
@@ -97,12 +101,20 @@ zrok is a tunneling tool to bridge between the server and the internet
 - Go to `https://myzrok.io/` and sign up for a free account
 - Go to `https://api-v2.zrok.io/` and click on the green question mark icon on the top right
 - Obtain the token and activate the operating system shell using `zrok2 enable [TOKEN]`
-- `zrok2 create name -n public [DOMAIN]` to reserve a name 
-- `zrok2 share public localhost:80 -n public:[DOMAIN]` to expose the local port using the domain
 
-### Starting the server
+### Database Location
+
+- `sudo -i`
+- `cd /var/lib/mysql`
+
+### Starting the Server
 
 - `sudo systemctl start mariadb httpd php-fpm`
+
+## Establishing Connection 
+
+- `zrok2 create name -n public [DOMAIN]` to reserve a name 
+- `zrok2 share public localhost:80 -n public:[DOMAIN]` to expose the local port using the domain
 
 ## Mobile Application Guide
 
@@ -111,4 +123,8 @@ zrok is a tunneling tool to bridge between the server and the internet
 - Register the account, and user will be redirected,
 - Allow the location in the app permission, and click on the new check-in to log the location
 - Click on any of the log to view location
+
+## Web Application Guide
+
+- Go to the following [link](https://zegell.github.io/OS-Project-Web/)
 
