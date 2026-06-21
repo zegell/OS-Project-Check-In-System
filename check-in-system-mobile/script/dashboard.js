@@ -24,6 +24,7 @@ function gpsModalState(status, message) {
         gpsLoadingModalHeader.className = "modal-header bg-success text-white";
         gpsLoadingModalTitle.innerHTML = "Success";
     }
+    
     gpsLoadingModalBody.innerHTML = `<p>${message}</p>`;
 }
 
@@ -103,7 +104,7 @@ function checkin() {
     gpsLoadingModal.show();
 
     if (!navigator.geolocation) {
-        showErrorGPSModal("Unsupported Hardware");
+        gpsModalState('loading', 'Acquiring GPS coordinates...');
         return;
     }
 
