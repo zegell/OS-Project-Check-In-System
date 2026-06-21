@@ -31,7 +31,7 @@ Check-In System is a web application built with a separation between its interfa
 
 The server runs in the Arch Linux environment, the chosen distro for the project
 
-### Required Packages
+## Required Packages
 
 Install the following packages using the following command
 
@@ -52,7 +52,7 @@ Install the following packages using the following command
 5. **phpMyAdmin**
     - `sudo pacman -S phpmyadmin`
 
-### Setting Up MariaDB
+## Setting Up MariaDB
 
 These are the commands required to give yourself the privileges needed:
 
@@ -61,7 +61,7 @@ These are the commands required to give yourself the privileges needed:
 - `FLUSH PRIVILEGES;`
 - `EXIT;`
 
-### Setting Up Apache, phpMyAdmin, PHP, and php-fpm
+## Setting Up Apache, phpMyAdmin, PHP, and php-fpm
 
 These are the commands needed to setup the web server
 
@@ -94,7 +94,7 @@ These are the commands needed to setup the web server
     - `Include conf/extra/php-fpm.conf`
     - `Include conf/extra/phpmyadmin.conf`
 
-### Setting Up zrok
+## Setting Up zrok
 
 zrok is a tunneling tool to bridge between the server and the internet
 
@@ -102,12 +102,12 @@ zrok is a tunneling tool to bridge between the server and the internet
 - Go to `https://api-v2.zrok.io/` and click on the green question mark icon on the top right
 - Obtain the token and activate the operating system shell using `zrok2 enable [TOKEN]`
 
-### Database Location
+## Database Location
 
 - `sudo -i`
 - `cd /var/lib/mysql`
 
-### Starting the Server
+## Starting the Server
 
 - `sudo systemctl start mariadb httpd php-fpm`
 
