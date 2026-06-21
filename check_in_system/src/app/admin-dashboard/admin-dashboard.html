@@ -89,6 +89,23 @@
                     </tbody>
                 </table>
             </div>
+            <div class="d-flex justify-content-between align-items-center mt-3 px-2">
+                <span class="small text-muted fw-bold">
+                    Page {{ userMeta().current_page }} of {{ userMeta().total_pages }}
+                </span>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-sm btn-outline-dark" 
+                            [disabled]="currentUserPage() === 1" 
+                            (click)="changeUserPage(-1)">
+                        Previous
+                    </button>
+                    <button type="button" class="btn btn-sm btn-outline-dark" 
+                            [disabled]="currentUserPage() >= userMeta().total_pages" 
+                            (click)="changeUserPage(1)">
+                        Next
+                    </button>
+                </div>
+            </div>
         </div>
         <div class = "my-5">
             <h4>All Check In</h4>
@@ -115,11 +132,11 @@
                     </thead>
                     <tbody>
                         @for (checkin of filteredCheckIn(); track checkin.checkin_id) {
-                            <tr>
+                            <tr (click) = "onRowClick(checkin.latitude, checkin.longitude)" style = "cursor: pointer;">
                                 <td class = "table-group-divider"><strong>{{checkin.username}}</strong></td>
                                 <th scope = "row" class = "table-group-divider">{{checkin.checkin_id}}</th>
                                 <td class = "table-group-divider">{{checkin.longitude | gpsDirection:'lng'}}°</td>
-                                <td class = "table-group-divider">{{checkin.latitude | gpsDirection:'lng'}}°</td>
+                                <td class = "table-group-divider">{{checkin.latitude | gpsDirection:'lat'}}°</td>
                                 <td class = "table-group-divider">{{checkin.check_in_time}}</td>
                                 <td class = "table-group-divider">
                                     <button class = "btn btn-danger" (click) = "openCheckInDeleteModal(checkin)">Delete</button>
@@ -134,6 +151,38 @@
                     </tbody>
                 </table>
             </div>
+            <div class="d-flex justify-content-between align-items-center mt-3 px-2">
+                <span class="small text-muted fw-bold">
+                    Page {{ checkInMeta().current_page }} of {{ checkInMeta().total_pages }}
+                </span>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-sm btn-outline-dark" 
+                            [disabled]="currentCheckInPage() === 1" 
+                            (click)="changeCheckInPage(-1)">
+                        Previous
+                    </button>
+                    <button type="button" class="btn btn-sm btn-outline-dark" 
+                            [disabled]="currentCheckInPage() >= checkInMeta().total_pages" 
+                            (click)="changeCheckInPage(1)">
+                        Next
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div>
+    <div class = "container mt-5 p-3 bg-secondary-subtle rounded shadow-lg">
+        <h4 class = "mb-4 mt-3">Check-In Location</h4>
+        <div class = "d-flex flex-column align-items-center justify-content-center">
+            @if (!mapEmbedUrl()) {
+                <p class = "mt-3">Click a Location to Reveal Map</p>
+            }
+            @else {
+                <p>Current Location on Map</p>
+                <div id = "rounded-4 shadow overflow-hidden border"   style = "width: 450px; height: 450px;">
+                <iframe width = "100%" height = "400" [src] = "mapEmbedUrl()" style="border-radius: 10px; display: block;"></iframe>
+                </div>
+            }
         </div>
     </div>
     @if (deleteModal() && userDelete()) {

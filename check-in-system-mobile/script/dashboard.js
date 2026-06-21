@@ -1,3 +1,7 @@
+let allLogs = [];
+let currentPage = 1;
+const pageSize = 10;
+
 document.addEventListener("DOMContentLoaded", function() {
     const activeUser = localStorage.getItem('username');
     
@@ -45,43 +49,74 @@ function renderHistory() {
         }
     })
     .then(logs => {
-        const tableBody = document.getElementById('checkInTableBody');
+        allLogs = logs;
+        currentPage = 1;
+
         const totalCheckIn = document.getElementById('totalCheckIn');
-        tableBody.innerHTML = "";
-
         if (totalCheckIn) {
-            totalCheckIn.innerHTML = logs.length;
+            totalCheckIn.innerHTML = allLogs.length;
         }
-
-        if (logs.length === 0) {
-            tableBody.innerHTML = `
-            <tr>
-                <td colspan = "4" class = "text-center text-muted py-3">
-                No data
-                </td>
-            </tr>
-            `;
-            return;
-        }
-
-        logs.forEach(row => {
-            const tr = document.createElement('tr');
-            tr.style.cursor = "pointer";
-            tr.setAttribute('onclick', `renderMap(${row.latitude}, ${row.longitude})`);
-            tr.innerHTML = `
-                <th scope = "row">${row.checkin_id}</th>
-                <td>${formatGPS(row.latitude, 'lat')}</td>
-                <td>${formatGPS(row.longitude, 'lng')}</td>
-                <td>${row.check_in_time}</td>
-            `;
-            tableBody.appendChild(tr);
-        });
+        displayPage();
     })
     .catch(err => {
         console.error("Table compile failure", err);
         const totalCheckIn = document.getElementById('totalCheckIn');
-        if (totalCheckIn) totalCheckIn.innerHTML = "0"
+        if (totalCheckIn) totalCheckIn.innerHTML = "0";
     });
+}
+
+function displayPage() {
+    const tableBody = document.getElementById('checkInTableBody');
+    tableBody.innerHTML = "";
+
+    if (allLogs.length === 0) {
+        tableBody.innerHTML = `
+            <tr>
+                <td colspan = "4" class = "text-center text-muted py-3">No Data</td>
+            </tr>
+        `;
+        updatePaginationControls(1, 1);
+        
+        return;
+    }
+
+    const totalPages = Math.ceil(allLogs.length / pageSize);
+    if (currentPage > totalPages) currentPage = totalPages;
+    
+    const startIndex = (currentPage - 1) * pageSize;
+    const endIndex = startIndex + pageSize;
+    const pageItems = allLogs.slice(startIndex, endIndex);
+
+    pageItems.forEach(row => {
+        const tr = document.createElement('tr');
+        tr.style.cursor = "pointer";
+        tr.setAttribute('onclick', `renderMap(${row.latitude}, ${row.longitude})`);
+        tr.innerHTML = `
+            <th scope = "row">${row.checkin_id}</th>
+            <td>${formatGPS(row.latitude, 'lat')}</td>
+            <td>${formatGPS(row.longitude, 'lng')}</td>
+            <td>${row.check_in_time}</td>
+        `;
+        tableBody.appendChild(tr);
+    });
+
+    updatePaginationControls(currentPage, totalPages)
+}
+
+function updatePaginationControls(current, total) {
+    document.getElementById('pageStatusText').innerHTML = `Page ${current} of ${total}`;
+    document.getElementById('prevPageButton').disabled = (current === 1);
+    document.getElementById('nextPageButton').disabled = (current >= total);
+}
+
+function changePage(step) {
+    const totalPages = Math.ceil(allLogs.length / pageSize);
+    const targetPage = currentPage + step;
+
+    if (targetPage >= 1 && targetPage <= totalPages) {
+        currentPage = targetPage;
+        displayPage();
+    }
 }
 
 function renderMap(lat, lng) {

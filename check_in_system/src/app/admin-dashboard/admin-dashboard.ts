@@ -1,8 +1,9 @@
-import { Component, inject, signal, OnInit, computed } from '@angular/core';
-import { CheckInFetchService, CheckInLog, GlobalCheckInLog, UserSystemLog } from '../check-in-fetch-service/check-in-fetch-service';
+import { Component, inject, signal, OnInit, computed, OnDestroy, effect } from '@angular/core';
+import { CheckInFetchService, GlobalCheckInLog, UserSystemLog } from '../check-in-fetch-service/check-in-fetch-service';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { GpsDirectionPipe } from '../gps-direction/gps-direction';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -10,14 +11,14 @@ import { GpsDirectionPipe } from '../gps-direction/gps-direction';
   templateUrl: './admin-dashboard.html',
   styleUrl: './admin-dashboard.css',
 })
-export class AdminDashboard implements OnInit {
+export class AdminDashboard implements OnInit, OnDestroy {
   private router = inject(Router);
   private checkInService = inject(CheckInFetchService);
   public username = signal<string>('User');
   public errorMessage = signal<string | null>(null);
-  public checkInLogs = signal<CheckInLog[]>([]);
-  public allUsers = signal<UserSystemLog[]>([]);
-  public allCheckIns = signal<GlobalCheckInLog[]>([]);
+  public checkInLogs = this.checkInService.checkInLogs;
+  public allUsers = this.checkInService.allUsers;
+  public allCheckIns = this.checkInService.allCheckIns;
   public userDelete = signal<UserSystemLog | null>(null);
   public deleteModal = signal<boolean>(false);
   public userEdit = signal<UserSystemLog | null>(null);
@@ -27,6 +28,26 @@ export class AdminDashboard implements OnInit {
   public checkInDeleteModal = signal<boolean>(false);
   public userSearch = signal<string>('');
   public checkInSearch = signal<string>('');
+  public currentCheckInPage = signal<number>(1);
+  public currentUserPage = signal<number>(1);
+  private userIdNum!: number;
+  public checkInMeta = this.checkInService.checkInMeta;
+  public userMeta = this.checkInService.userMeta;
+  private sanitiser = inject(DomSanitizer);
+  public mapEmbedUrl = signal<SafeResourceUrl | null>(null);
+
+  constructor() {
+    effect(() => {
+      if (this.userIdNum) {
+        this.checkInService.stopAdminPolling();
+        this.checkInService.startAdminPolling(
+          this.userIdNum,
+          this.currentCheckInPage(),
+          this.currentUserPage()
+        );
+      }
+    });
+  }
 
   ngOnInit(): void {
     const currentUserData = localStorage.getItem('currentUser');
@@ -39,11 +60,8 @@ export class AdminDashboard implements OnInit {
         }
 
         if (userObj.user_id) {
-          const userIdNum = parseInt(userObj.user_id, 10);
-          this.loadHistory(userIdNum);
-          this.loadAllUsers();
-          this.loadAllCheckIns();
-          this.checkInService.fetchLiveProfile(userIdNum).subscribe({
+          this.userIdNum = parseInt(userObj.user_id, 10);
+          this.checkInService.fetchLiveProfile(this.userIdNum).subscribe({
             next: (liveUser) => {
               if (liveUser.user_type !== userObj.user_type) {
                 console.log('User Type Mismatch');
@@ -75,30 +93,29 @@ export class AdminDashboard implements OnInit {
     }
   }
 
-  loadHistory(userId: number): void {
-    this.checkInService.getCheckInHistory(userId).subscribe({
-      next: (data) => {
-        this.checkInLogs.set(data);
-      },
-      error: (err) => {
-        console.error('History Compile Failure: ', err);
-        this.errorMessage.set('Failed to retrieve data');
-      }
-    });
+  ngOnDestroy(): void {
+    this.checkInService.stopAdminPolling();
   }
 
-  loadAllUsers(): void {
-    this.checkInService.getAllUsers().subscribe({
-      next: (data) => this.allUsers.set(data),
-      error: (err) => this.errorMessage.set('Failed to retrieve system user index')
-    });
+  changeCheckInPage(step: number): void {
+    const targetPage = this.currentCheckInPage() + step;
+    if (targetPage >= 1 && targetPage <= this.checkInMeta().total_pages) {
+      this.currentCheckInPage.set(targetPage);
+      this.checkInService.triggerCheckInPageUpdate(targetPage);
+    }
   }
 
-  loadAllCheckIns(): void{
-    this.checkInService.getAllCheckIns().subscribe({
-      next: (data) => this.allCheckIns.set(data),
-      error: (err) => this.errorMessage.set('Failed to retrieve system check-in index')
-    })
+  changeUserPage(step: number): void {
+    const targetPage = this.currentUserPage() + step;
+    if (targetPage >= 1 && targetPage <= this.userMeta().total_pages) {
+      this.currentUserPage.set(targetPage);
+      this.checkInService.triggerUserPageUpdate(targetPage);
+    }
+  }
+
+  public onRowClick(latitude: number, longitude: number): void  {
+    const url = `https://maps.google.com/maps?q=${latitude},${longitude}&t=&z=10&ie=UTF8&iwloc=&output=embed`;
+    this.mapEmbedUrl.set(this.sanitiser.bypassSecurityTrustResourceUrl(url));
   }
 
   openDeleteModal(user: UserSystemLog): void {
@@ -228,8 +245,8 @@ export class AdminDashboard implements OnInit {
   });
 
   public personalTotalCheckIn = computed(() => this.checkInLogs().length);
-  public totalUser = computed(() => this.allUsers().length);
-  public totalCheckIn = computed(() => this.allCheckIns().length);
+  public totalUser = computed(() => this.userMeta().total_records);
+  public totalCheckIn = computed(() => this.checkInMeta().total_records);
 
   onUserSearch(event: Event, inputElement: HTMLInputElement): void {
     event.preventDefault();
