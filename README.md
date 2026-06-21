@@ -14,7 +14,7 @@ Check-In System is a web application built with a separation between its interfa
 
 ## Components Diagram
 
-![Components Diagram of the Project](https://github.com/zegell/OS-Project-Check-In-System/componentsDiagram)
+![Components Diagram of the Project](https://github.com/zegell/OS-Project-Check-In-System/componentsDiagram.png)
 
 ## [Web Application](https://zegell.github.io/OS-Project-Web/)
 
