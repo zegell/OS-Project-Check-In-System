@@ -57,6 +57,7 @@ Install the following packages using the following command
 These are the commands required to give yourself the privileges needed:
 
 - `sudo mariadb -u root -p`
+- `CREATE USER '#YOURNAME'@'localhost' IDENTIFIED BY '#YOURPASS'`
 - `GRANT ALL PRIVILEGES ON *.* TO '#YOURNAME'@'localhost' WITH GRANT OPTION;`
 - `FLUSH PRIVILEGES;`
 - `EXIT;`
@@ -93,6 +94,17 @@ These are the commands needed to setup the web server
 - At the bottom of the file, include:
     - `Include conf/extra/php-fpm.conf`
     - `Include conf/extra/phpmyadmin.conf`
+
+## Creating the Database
+
+- Open browser, go to `http://localhost/phpmyadmin/`
+- Log in using your `#YOURNAME` and `#YOURPASS`
+- Go to SQL tab, and use the SQL commands from `schema.sql`, located in the `check_in_system_db`
+
+## Connecting User Device to Database via PHP
+
+- Open file manager, go to `/srv/http/`
+- Paste folder `check-in-system-api`
 
 ## Setting Up zrok
 
